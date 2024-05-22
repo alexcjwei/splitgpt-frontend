@@ -1,4 +1,6 @@
 <script lang="ts">
+	const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 	import { resolveDebts } from '$lib/index';
 
 	let text = '';
@@ -58,7 +60,7 @@
 
 	async function handleSubmit() {
 		try {
-			const res = await fetch('http://localhost:8000/create-contributions-table', {
+			const res = await fetch(`${apiBaseUrl}/create-contributions-table`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
