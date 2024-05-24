@@ -64,8 +64,8 @@
 	}
 
 	async function handleSubmit() {
+		loading = true;
 		try {
-			loading = true;
 			const res = await fetch(`${apiBaseUrl}/create-contributions-table`, {
 				method: 'POST',
 				headers: {
@@ -73,24 +73,21 @@
 				},
 				body: JSON.stringify({ text })
 			});
-			loading = false;
 			const data = await res.json();
-			console.log(data);
 			if (!res.ok) {
-				errorMessage = data.detail;
-				return;
+				errorMessage = 'Please enter a valid description.';
+			} else {
+				errorMessage = '';
+				contributionsTableColumns = data.columns;
+				contributionsTableData = data.data;
+				submittedText = text;
+				text = '';
+				updateCalculations();
 			}
-			errorMessage = '';
-			contributionsTableColumns = data.columns;
-			contributionsTableData = data.data;
-			submittedText = text;
-			text = '';
-			updateCalculations();
-		} catch (error) {
-			errorMessage = 'Unknown error occurred. Please try again later.';
-			console.log('Error', error);
-			// Handle error here
+		} catch (error: any) {
+			errorMessage = 'An error occurred. Please try again later.';
 		}
+		loading = false;
 	}
 </script>
 
