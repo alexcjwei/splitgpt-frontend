@@ -13,6 +13,7 @@
 	let rowTotals: number[] = [];
 	let resolveDebtsResult: string[] = [];
 	let netPerPerson: { name: string; contributed: number; consumed: number; amount: number }[] = [];
+	let loading = false;
 
 	function updateCalculations() {
 		updateTotals();
@@ -64,6 +65,7 @@
 
 	async function handleSubmit() {
 		try {
+			loading = true;
 			const res = await fetch(`${apiBaseUrl}/create-contributions-table`, {
 				method: 'POST',
 				headers: {
@@ -71,6 +73,7 @@
 				},
 				body: JSON.stringify({ text })
 			});
+			loading = false;
 			const data = await res.json();
 			console.log(data);
 			if (!res.ok) {
@@ -94,21 +97,23 @@
 <div>
 	<Header />
 	<form class="flex flex-col items-center p-2 w-1/3 mx-auto">
-		<textarea
-			name="text"
-			bind:value={text}
-			required
-			class="w-full p-2 mb-4 outline"
-			placeholder="Alice bought the unicorn waffle maker for $45, and Bob got the glow-in-the-dark mix for $10."
-		/>
+		<p class="text-sm text-gray-500 mb-2">Describe who made what purchases for how much.</p>
+		<div contenteditable="true" class="w-full p-2 mb-4 outline" bind:innerText={text}>
+			{text}
+		</div>
 		{#if errorMessage}
 			<p class="error text-red-500 py-2">{errorMessage}</p>
 		{/if}
 		<button
+			disabled={loading}
 			on:click={handleSubmit}
 			class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 		>
-			Submit
+			{#if loading}
+				<span class="text-lg">🔄</span> Loading...
+			{:else}
+				<span class="text-lg">🪄</span> Resolve with AI
+			{/if}
 		</button>
 	</form>
 
@@ -118,10 +123,10 @@
 				<blockquote class="text-xl italic">{submittedText}</blockquote>
 			</div>
 			<div>
+				<h3 class="text-2xl font-bold mt-4"><span>🔀</span> Steps to resolve debts</h3>
 				{#if resolveDebtsResult.length === 0}
 					<p>No debts to resolve</p>
 				{:else}
-					<h3 class="text-2xl font-bold mt-4"><span>🔀</span> Steps to resolve debts</h3>
 					<ol class="list-decimal list-inside">
 						{#each resolveDebtsResult as debt}
 							<li class="text-lg">{debt}</li>
@@ -155,6 +160,7 @@
 											<input
 												type="number"
 												value={cell}
+												min="0"
 												on:input={(event) => handleCellInputChange(event, i, j)}
 												class="w-16 p-1 text-center mx-auto"
 											/>
