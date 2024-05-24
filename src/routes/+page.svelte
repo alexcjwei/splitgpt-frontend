@@ -160,6 +160,7 @@
 											<input
 												type="number"
 												value={cell}
+												step="0.01"
 												min="0"
 												on:input={(event) => handleCellInputChange(event, i, j)}
 												class="w-16 p-1 text-center mx-auto"
@@ -185,7 +186,8 @@
 					<ul class="list-disc list-inside">
 						{#each netPerPerson as person}
 							<li>
-								{person.name}: {person.amount} (paid {person.contributed}, consumed {person.consumed})
+								{person.name}: {person.amount.toFixed(2)} (paid {person.contributed.toFixed(2)},
+								consumed {person.consumed.toFixed(2)})
 							</li>
 						{/each}
 					</ul>

@@ -16,7 +16,7 @@ export function resolveDebts(people: { name: string; amount: number }[]): string
 		const transactionAmount = Math.min(debtor.amount, -creditor.amount);
 
 		// Record the transaction
-		steps.push(`${debtor.name} -> ${transactionAmount} -> ${creditor.name}`);
+		steps.push(`${debtor.name} -> ${transactionAmount.toFixed(2)} -> ${creditor.name}`);
 
 		// Update the amounts
 		debtor.amount -= transactionAmount;
