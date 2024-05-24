@@ -8,19 +8,19 @@ export function resolveDebts(people: { name: string; amount: number }[]): string
 	const steps = [];
 
 	// Resolve the debts
+	console.log(debtors, creditors);
 	while (debtors.length > 0 && creditors.length > 0) {
 		const debtor = debtors[0];
 		const creditor = creditors[0];
 
-		// The transaction amount is the lesser of what the debtor owes and what the creditor is owed
-		const transactionAmount = Math.min(-debtor.amount, creditor.amount);
+		const transactionAmount = Math.min(debtor.amount, -creditor.amount);
 
 		// Record the transaction
 		steps.push(`${debtor.name} -> ${transactionAmount} -> ${creditor.name}`);
 
 		// Update the amounts
-		debtor.amount += transactionAmount;
-		creditor.amount -= transactionAmount;
+		debtor.amount -= transactionAmount;
+		creditor.amount += transactionAmount;
 
 		// Remove fully settled debts/credits
 		if (debtor.amount == 0) {
